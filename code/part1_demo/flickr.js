@@ -53,5 +53,5 @@ require([
     var renderImages = _.compose(Impure.setHtml("body"), images)
     var app = _.compose(Impure.getJSON(renderImages), url)
 
-    app("cats")
+    app("walker")
   });

@@ -90,3 +90,7 @@ toUpperCase = function(x) {
 toLowerCase = function(x) {
     return x.toLowerCase()
 };
+trace = curry(function(tag, x) {
+  console.log(tag, x);
+  return x;
+});
