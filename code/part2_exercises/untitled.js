@@ -1,5 +1,8 @@
 require('../part1_exercises/support')
+require('./support')
+let fs = require('fs')
 var _ = require('ramda')
+var Task = require('data.task')
 var curry = _.curry
 // const compose = f => g => x => f(g(x))
 // const toUpperCase = x => x.toUpperCase()
@@ -7,15 +10,15 @@ var curry = _.curry
 // const exclaim = x => x + '!'
 // const shout = compose(exclaim)(toUpperCase)
 // console.log(shout('send in the clowns'))
-// const head = x => x[0]
+const head = x => x[0]
 // const reverse = reduce(function (acc, x) {
 //   return [x].concat(acc)
 // }, [])
 // const last = compose(head, reverse)
 // const tail = x => x[x.length - 1]
-var reverse = reduce(function (acc, x) {
-  return [x].concat(acc)
-}, [])
+// var reverse = reduce(function (acc, x) {
+  // return [x].concat(acc)
+// }, [])
 // var last = compose(head)(reverse)
 // var loudLastUpper = compose(exclaim)(compose(toUpperCase)(compose(head)(reverse)));
 // last = compose(head)(toUpperCase)
@@ -38,9 +41,9 @@ var reverse = reduce(function (acc, x) {
 // var dasherize = compose(join('-'), map(toLowerCase), trace('after split'), split(' '), replace(/\s{2,}/ig, ' '))
 
 // console.log(dasherize('The world is a vampire'))
-var id = function (x) {
-  return x
-}
+// var id = function (x) {
+  // return x
+// }
 // var f = function (x) {
 //   return x === 4
 // }
@@ -57,12 +60,12 @@ var id = function (x) {
 // const joiner = curry((what, xs) => xs.join(what))
 // const match = curry((reg, s) => s.match(reg))
 // const replace = curry((reg, sub, s) => s.replace(reg, sub))
-let Container = function (x) {
-  this.__value = x
-}
-Container.of = function (x) {
-  return new Container(x)
-}
+// let Container = function (x) {
+  // this.__value = x
+// }
+// Container.of = function (x) {
+  // return new Container(x)
+// }
 // console.log(Container.of(3))
 // console.log(Container.of('hotdog'))
 // console.log(Container.of(Container.of({
@@ -85,10 +88,10 @@ Maybe.of = function (x) {
   return new Maybe(x)
 }
 // Maybe.prototype.isNothing = function (x) {
-//   return (this.__value === null || this.__value === undefined)
+  // return (this.__value === null || this.__value === undefined)
 // }
 // Maybe.prototype.map = function (f) {
-//   return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value))
+  // return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value))
 // }
 
 // console.log(Maybe.of('Malkovich Malkovich').map(match(/a/ig)))
@@ -143,22 +146,22 @@ Maybe.of = function (x) {
 //   balance: 10.00
 // }))
 // let Left = function (x) {
-//   this.__value = x
+  // this.__value = x
 // }
 // Left.of = function (x) {
-//   return new Left(x)
+  // return new Left(x)
 // }
 // Left.prototype.map = function (f) {
-//   return this
+  // return this
 // }
 // let Right = function (x) {
-//   this.__value = x
+  // this.__value = x
 // }
 // Right.of = function (x) {
-//   return new Right(x)
+  // return new Right(x)
 // }
 // Right.prototype.map = function (f) {
-//   return Right.of(f(this.__value))
+  // return Right.of(f(this.__value))
 // }
 // console.log(Right.of('rain').map(function (str) {
 //   return 'b' + str
@@ -212,17 +215,14 @@ Maybe.of = function (x) {
 // 		return localStorage[key]
 // 	}
 // }
-// let IO = function (f) {
-//   this.__value = f
-// }
-// IO.of = function (x) {
-//   return new IO(function () {
-//     return x
-//   })
-// }
-// IO.prototype.map = function (f) {
-//   return new IO(_.compose(f, this.__value))
-// }
+let IO = function (f) {
+  this.__value = f
+}
+//  IO.of = function (x) {
+//    return new IO(function () {
+//      return x
+//    })
+//  }
 // let io_window = new IO(function () {
 //   return window
 // })
@@ -281,7 +281,106 @@ Maybe.of = function (x) {
 
 // console.log(compLaw2(Container.of('Goodbye')))
 // => Container(' world cruelGoodbye')
-let topRoute = _.compose(Maybe.of, _.reverse)
-let bottomRoute = _.compose(_.map(_.reverse), Maybe.of)
-console.log(topRoute('hi'))
-console.log(bottomRoute('hi'))
+// let topRoute = _.compose(Maybe.of, _.reverse)
+// let bottomRoute = _.compose(_.map(_.reverse), Maybe.of)
+// console.log(topRoute('hi'))
+// console.log(bottomRoute('hi'))
+// var nested = Task.of([Right.of('pillows'), Left.of('no sleep for you')])
+// console.log(map(map(map(toUpperCase)), nested))
+// Either
+// Either = function () {}
+// Either.of = function (x) {
+  // return new Right(x)
+// }
+IO = function (f) {
+  this.unsafePerformIO = f
+}
+
+IO.of = function (x) {
+  return new IO(function () {
+    return x
+  })
+}
+IO.prototype.map = function (f) {
+  console.log(this.unsafePerformIO())
+  return new IO(_.compose(f, this.unsafePerformIO()))
+}
+// console.log(IO.of('tetris').map(_.concat(' master')), IO.of(100).unsafePerformIO())
+// console.log(Maybe.of(1336).map(add(1)))
+// console.log(Task.of({
+    // id: 2,
+// }).map(_.prop('id')))
+// console.log(Either.of('The past, present and future walk into a bar...').map(_.concat('it was tense')))
+
+// let readFile = function (filename) {
+//   return new IO(function () {
+//     return fs.readFileSync(filename, 'utf-8')
+//   })
+// }
+// let print = function (x) {
+//   return new IO(function () {
+//     console.log(x)
+//     return x
+//   })
+// }
+// let cat = _.compose(_.map(print), readFile)
+// let cat = _.compose(_.map(print), readFile)
+// console.log('yay chill ', cat('target.txt'))
+// let catFirstChar = _.compose(_.map(_.head), cat)
+// console.log(catFirstChar('target.txt'))
+let safeProp = _.curry(function (x, obj) {
+  return new Maybe(obj[x])
+})
+let safeHead = safeProp(0)
+let firstAddressStreet = _.compose(_.map(_.map(safeProp('street'))), _.map(safeHead), safeProp('addresses'))
+console.log(firstAddressStreet({
+  addresses: [{
+    street: {
+      name: 'Mulburry',
+      number: 8402
+    },
+    postcode: 'WC2N'
+  }]
+}).__value.__value.__value)
+Maybe.prototype.isNothing = function (f) {
+  return (this.__value === null || this.__value === undefined)
+}
+Maybe.prototype.join = function () {
+  return this.isNothing() ? Maybe.of(null) : this.__value
+}
+let mmo = Maybe.of(Maybe.of('nunchucks'))
+console.log(mmo.join())
+IO.prototype.join = function () {
+  let thiz = this
+  return thiz.unsafePerformIO().unsafePerformIO()
+}
+let ioio = IO.of(IO.of('pizza'))
+console.log(ioio.join())
+let ttt = Task.of(Task.of(Task.of('sewers')))
+console.log(ttt.join())
+let chain = _.curry(function (f, m) {
+  console.log(m)
+  return m.map(f).join()
+})
+firstAddressStreet = _.compose(_.join, _.map(safeProp('street')), _.join, _.map(safeHead), safeProp('addresses'))
+console.log(firstAddressStreet({
+  addresses: [{
+    street: {
+      name: 'Mulburry',
+      number: 8402
+    },
+    postcode: 'WC2N'
+  }]
+}))
+
+firstAddressStreet = _.compose(chain(safeProp('street')), chain(safeHead), safeProp('addresses'))
+firstAddressStreet = safeHead(safeProp('addresses'))
+console.log(firstAddressStreet({
+  addresses: [{
+    street: {
+      name: 'Mulburry',
+      number: 8402
+    },
+    postcode: 'WC2N'
+  }]
+}))
