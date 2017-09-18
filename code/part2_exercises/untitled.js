@@ -10,7 +10,7 @@ var curry = _.curry
 // const exclaim = x => x + '!'
 // const shout = compose(exclaim)(toUpperCase)
 // console.log(shout('send in the clowns'))
-const head = x => x[0]
+// const head = x => x[0]
 // const reverse = reduce(function (acc, x) {
 //   return [x].concat(acc)
 // }, [])
@@ -122,7 +122,7 @@ Maybe.of = function (x) {
 // let withdraw = curry(function (amount, account) {
 //   return account.balance >= amount
 //   ? Maybe.of({
-//   	balance: account.balance - amount
+//  balance: account.balance - amount
 //   }) : Maybe.of(null)
 // })
 // let remainingBalance = (a) => a
@@ -211,9 +211,9 @@ Maybe.of = function (x) {
 //   birthdate: 'balloons!'
 // })
 // let getFromStorage = function(key) {
-// 	return function() {
-// 		return localStorage[key]
-// 	}
+//   return function() {
+//     return localStorage[key]
+//   }
 // }
 let IO = function (f) {
   this.__value = f
@@ -359,8 +359,8 @@ console.log(ioio.join())
 let ttt = Task.of(Task.of(Task.of('sewers')))
 console.log(ttt.join())
 let chain = _.curry(function (f, m) {
-  console.log(m)
-  return m.map(f).join()
+  // return m.map(f).join()
+  return _.compose(_.join(), _.map(f))(m)
 })
 firstAddressStreet = _.compose(_.join, _.map(safeProp('street')), _.join, _.map(safeHead), safeProp('addresses'))
 console.log(firstAddressStreet({
@@ -374,7 +374,6 @@ console.log(firstAddressStreet({
 }))
 
 firstAddressStreet = _.compose(chain(safeProp('street')), chain(safeHead), safeProp('addresses'))
-firstAddressStreet = safeHead(safeProp('addresses'))
 console.log(firstAddressStreet({
   addresses: [{
     street: {
