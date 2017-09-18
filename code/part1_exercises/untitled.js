@@ -1,16 +1,16 @@
 require('./support.js')
-// const compose = f => g => x => f(g(x))
+const compose = (f, g) => x => f(g(x))
 const toUpperCase = x => x.toUpperCase()
 const toLowerCase = x => x.toLowerCase()
  const exclaim = x => x + '!'
 // const shout = compose(exclaim)(toUpperCase)
 // console.log(shout('send in the clowns'))
 const head = x => x[0]
-const tail = x => x[x.length-1]
-// var reverse = reduce(function (acc, x) {
-//   return [x].concat(acc)
-// }, [])
-// var last = compose(head)(reverse)
+//const tail = x => x[x.length-1]
+var reverse = reduce(function (acc, x) {
+  return [x].concat(acc)
+}, [])
+var last = compose(head, reverse)
 // var loudLastUpper = compose(exclaim)(compose(toUpperCase)(compose(head)(reverse)));
 // last = compose(head)(toUpperCase)
 // var angry = compose(exclaim, toUpperCase)
@@ -43,5 +43,5 @@ var f = function(x) {
 // console.log(dd == dd1)
 // console.log(compose(id, f) == compose(f, id));
 
-let capitalize = s => toUpperCase(head(s)) + toLowerCase(tail(s))
-console.log(capitalize("smurf"))
+// let capitalize = s => toUpperCase(head(s)) + toLowerCase(tail(s))
+// console.log(capitalize("smurf"))
