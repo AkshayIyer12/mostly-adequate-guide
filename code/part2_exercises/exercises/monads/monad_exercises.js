@@ -1,7 +1,7 @@
 require('../../support')
 var Task = require('data.task')
 var _ = require('ramda')
-
+var path = require('path')
 // Exercise 1
 // ==========
 // Use safeProp and map/join or chain to safely get the street name when given a user
@@ -13,12 +13,12 @@ var user = {
   address: {
     street: {
       number: 22,
-      name: 'Walnut St'
+	name: 'Walnut St'
     }
   }
 }
 
-var ex1
+var ex1 = _.compose(chain(safeProp('name')), chain(safeProp('street')), safeProp('address'))
 
 // Exercise 2
 // ==========
@@ -35,7 +35,7 @@ var pureLog = function (x) {
   })
 }
 
-var ex2
+var ex2 = _.compose(chain(_.compose(pureLog, _.last, split(path.sep))), getFile)
 
 // Exercise 3
 // ==========
@@ -57,7 +57,7 @@ var getComments = function (i) {
   })
 }
 
-var ex3
+var ex3 = _.compose(_.chain( _.compose(getComments, _.prop('id'))), getPost)
 
 // Exercise 4
 // ==========
@@ -87,6 +87,6 @@ var validateEmail = function (x) {
 }
 
 //  ex4 :: Email -> Either String (IO String)
-var ex4
+var ex4 = _.compose(_.map(_.compose(chain(emailBlast), addToMailingList)), validateEmail)
 
 module.exports = {ex1: ex1, ex2: ex2, ex3: ex3, ex4: ex4, user: user}
