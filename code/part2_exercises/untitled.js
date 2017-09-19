@@ -1,3 +1,4 @@
+
 require('../part1_exercises/support')
 require('./support')
 let fs = require('fs')
@@ -71,9 +72,7 @@ var curry = _.curry
 // console.log(Container.of(Container.of({
 //   name: 'Yoda'
 // })))
-// Container.prototype.map = function (f) {
-//   return Container.of(f(this.__value))
-// }
+
 // console.log(Container.of(5).map(function (two) {
 //   return two + 2
 // }))
@@ -87,13 +86,15 @@ let Maybe = function (x) {
 Maybe.of = function (x) {
   return new Maybe(x)
 }
-// Maybe.prototype.isNothing = function (x) {
-  // return (this.__value === null || this.__value === undefined)
-// }
-// Maybe.prototype.map = function (f) {
-  // return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value))
-// }
-
+Maybe.prototype.isNothing = function (x) {
+  return (this.__value === null || this.__value === undefined)
+}
+Maybe.prototype.map = function (f) {
+  return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value))
+}
+Maybe.prototype.chain = function (f) {
+  return this.map(f).join()
+}
 // console.log(Maybe.of('Malkovich Malkovich').map(match(/a/ig)))
 // console.log(Maybe.of(null).map(match(/a/ig)))
 // console.log(Maybe.of({
@@ -267,12 +268,15 @@ let IO = function (f) {
 // let idLaw2 = id
 // console.log(idLaw1(Container.of(2)))
 // console.log(idLaw2(Container.of(2)))
-// let Container = function (x) {
-//   this.__value = x
-// }
-// Container.of = function (x) {
-//   return new Container(x)
-// }
+let Container = function (x) {
+  this.__value = x
+}
+Container.of = function (x) {
+  return new Container(x)
+}
+Container.prototype.map = function (f) {
+  return Container.of(f(this.__value))
+}
 // var compLaw1 = _.compose(_.map(_.concat(' world')), _.map(_.concat(' cruel')))
 // var compLaw2 = _.map(_.compose(_.concat(' world'), _.concat(' cruel')))
 
@@ -383,3 +387,18 @@ console.log(firstAddressStreet({
     postcode: 'WC2N'
   }]
 }))
+console.log(Maybe.of(3).chain(function (three) {
+  return Maybe.of(2).map(add (three))
+}))
+
+console.log(_.add(Container.of(2), Container.of(3)))
+console.log(_.map(_.add, Container.of(2)))
+Container.prototype.ap = function (otherContainer) {
+  return otherContainer.map(this.__value)
+}
+Maybe.prototype.ap = function (otherContainer) {
+  return otherContainer.map(this.__value)
+}
+console.log(Container.of(_.add(2)).ap(Container.of(3)))
+console.log(Maybe.of(_.add).ap(Maybe.of(2)).ap(Maybe.of(3)))
+console.log(Task.of(_.add).ap(Task.of(2)).ap(Task.of(3)))
